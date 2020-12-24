@@ -9,8 +9,9 @@
             </a-form-item>
             <a-form-item label="配置请求JSON">
                 <a-textarea
+                    @on-keydown="textareaTab"
                     v-model:value="form.ajaxJson"
-                    :rows="10"
+                    :rows="15"
                     :placeholder="
                     `feDisplacementMapfds
                     fdsa
@@ -27,7 +28,10 @@
                 <a-col span="4"></a-col>
                 <a-col span="14">
                     <a-button type="primary" @click="submit">
-                        Submit
+                        保存
+                    </a-button>
+                    <a-button style="margin-left: 10px;" @click="push">
+                        取消
                     </a-button>
                 </a-col>
             </a-row>
@@ -37,9 +41,10 @@
 
 <script>
 
-import {Form, Input, Button, Radio, Row, Col} from 'ant-design-vue';
-import {trim} from 'lodash-es';
+import {Form, Input, Button, Radio, Row, Col, message} from 'ant-design-vue';
+import {trim, set} from 'lodash-es';
 import axios from 'axios';
+import {getQuery} from "@/util/utils";
 
 export default {
     name: "Index",
@@ -57,13 +62,61 @@ export default {
             form: {
                 companyName: '',
                 proxyPath: '',
-                ajaxJson: '',
+                ajaxJson:
+
+`[
+    {
+        "method": "GET",
+        "path": "/testget",
+        "headers": {
+            "ffdsaf": "fdsafd"
+        },
+        "query": "fdasfd=fdasfds"
+    },
+     {
+        "method": "POST",
+        "path": "/testpost",
+        "headers": {
+            "fdasfdpost": "post"
+        },
+        "body": {
+            "postboyd": "fdsafd"
+        }
+    }
+]`,
 
             },
             isJson: true,
+            id: getQuery('id'),
         };
     },
+    mounted() {
+        if(getQuery('id')){
+            axios.post('/api/getDetail', {id: getQuery('id')}).then(res => {
+                console.log(res.data)
+                let {companyName, proxyPath, ajaxJson} = res.data;
+                this.form.companyName = companyName;
+                this.form.proxyPath = proxyPath;
+                this.form.ajaxJson = ajaxJson;
+            })
+        }
+    },
     methods: {
+        push(){
+            this.$router.push('/');
+        },
+        textareaTab (e) {
+            // if (e.keyCode === 9) {
+            //     if (!this.form.ajaxJson) this.form.ajaxJson = ''
+            //     this.form.ajaxJson+= '\t'
+            //     // 阻止默认切换元素的行为
+            //     if (e && e.preventDefault) {
+            //         e.preventDefault()
+            //     } else {
+            //         window.event.returnValue = false
+            //     }
+            // }
+        },
         isJsonString(str) {
             try {
                 JSON.parse(str)
@@ -73,7 +126,38 @@ export default {
             }
         },
         submit() {
-
+            let {companyName, proxyPath, ajaxJson} = this.form;
+            companyName = trim(companyName);
+            proxyPath = trim(proxyPath);
+            if(!companyName){
+                message.error('请输入公司名称')
+                return;
+            }
+            if(!proxyPath){
+                message.error('请输入代理路径')
+                return;
+            }
+            if(!ajaxJson){
+                message.error('请配置请求JSON')
+                return;
+            }
+            if(!this.isJsonString(ajaxJson)){
+                message.error('请配置正确的请求JSON')
+                return;
+            }
+            let params = {
+                companyName,
+                proxyPath,
+                ajaxJson,
+            }
+            if(this.id){
+                set(params, 'id', this.id);
+            }
+            axios.post('/api/setDetail', params).then(res => {
+                console.log(res)
+                message.success('保存成功');
+                this.$router.push('/');
+            })
         },
     },
     watch: {

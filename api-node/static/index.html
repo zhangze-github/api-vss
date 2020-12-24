@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script>
+</head>
+<body>
+    <center style="margin-top: 100px; font-size: 20px">
+        请打开控制台查看请求日志
+    </center>
+
+<script>
+    let id = location.pathname.replace('/', '');
+
+    axios.post('/api/getDetail', {id}).then(res => {
+        let {ajaxJson} = res.data;
+        sendAjax(ajaxJson)
+    })
+
+    function sendAjax(ajaxJson){
+        console.warn(ajaxJson);
+    }
+
+    // axios.post('./proxy', {a: "fdsa", b: "fdafds"})
+    // axios.post('./proxy', {c: "fdsa", d: "fdafds"})
+
+    // axios.post('http://47.106.113.142:81/1', {c: "fdsa", d: "fdafds"})
+    // axios.post('http://47.106.113.142:81/2', {a: "fdsa", b: "fdafds"})
+
+
+</script>
+</body>
+</html>
