@@ -20,16 +20,17 @@
     })
 
     function sendAjax(ajaxJson){
-        console.warn(ajaxJson);
+        let ajaxArr = JSON.parse(ajaxJson);
+        ajaxArr.forEach(item => {
+            let {method, path, query, headers = {}, body = {}} = item;
+            if(method === "GET"){
+                axios.get(`/${id}${path}?${query}`, {headers})
+            }
+            if(method === "POST"){
+                axios.post(`/${id}${path}`, body, {headers})
+            }
+        })
     }
-
-    // axios.post('./proxy', {a: "fdsa", b: "fdafds"})
-    // axios.post('./proxy', {c: "fdsa", d: "fdafds"})
-
-    // axios.post('http://47.106.113.142:81/1', {c: "fdsa", d: "fdafds"})
-    // axios.post('http://47.106.113.142:81/2', {a: "fdsa", b: "fdafds"})
-
-
 </script>
 </body>
 </html>
