@@ -8,7 +8,7 @@ var history = require('connect-history-api-fallback');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const path = require('path');
 // app.use(jsonParser);
-// app.use(cors());
+app.use(cors());
 // app.use(history());
 
 
