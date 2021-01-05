@@ -89,7 +89,7 @@ export default {
             });
         },
         openNew(id){
-            window.open(`http://localhost:3000/${id}`)
+            window.open(`http://124.71.99.34:3000/${id}`)
         }
     }
 }

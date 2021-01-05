@@ -2,7 +2,7 @@
 var Sequelize = require('sequelize');
 // 数据库配置文件
 var sqlConfig = {
-    host: "192.168.0.93",
+    host: "116.63.71.111",
     user: "root",
     password: "!1Zezhang",
     database: "api"

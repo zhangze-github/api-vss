@@ -77,7 +77,6 @@ app.use('/api/setDetail', jsonParser, ((request, response) => {
             response.status(500).send('failed');
         })
     }
-
 }))
 
 app.use("*", async (req, res, next) => {
@@ -94,13 +93,12 @@ app.use("*", async (req, res, next) => {
         res.status(500).send('failed');
         return;
     }
-    console.warn(req.baseUrl);
     createProxyMiddleware({
         target: proxyPath,
         pathRewrite: async function (path, req) {
             let targetPath = path.split('?')[0];
             targetPath = targetPath.replace(`/${id}`, '');
-            return targetPath;
+            return path.replace(`/${id}`, '');
         }
     })(req, res, next)
 });
